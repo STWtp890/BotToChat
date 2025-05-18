@@ -7,8 +7,18 @@ from ncatbot.plugin import CompatibleEnrollment
 
 from .jmcomic_handler import JMcomicHandler
 
-bot = CompatibleEnrollment
 
+text_before_send = '稍等喵, 漫画正在处理中...'
+
+text_help = (
+    '输入 "/jm [神秘数字]" 来获取漫画\n'
+    '等待下载后, 漫画会发送到你的私聊喵'
+)
+
+text_without_album = '数字都没有, 你在逗我喵?'
+
+
+bot = CompatibleEnrollment
 
 class JMcomic(BasePlugin):
     """
@@ -34,31 +44,38 @@ class JMcomic(BasePlugin):
         self.loop.create_task(self.on_msg(msg))
 
     async def on_msg(self, msg: GroupMessage | PrivateMessage) -> None:
+        """
+        Handles incoming messages to process commands starting with '/jm'.
+        
+        :param msg: The incoming message object, can be either a group message or a private message.
+        """
         if not msg.raw_message.startswith('/jm'):
             return None
 
         if msg.raw_message.startswith('/jm help'):
-            await self.help(msg)
+            await msg.reply(text=text_help)
             return None
 
-        # check album_id
-        album_id = search(r'/jm (\d+)', msg.raw_message)
-        if album_id is None:
-            await msg.reply(text='数字都没有, 你在逗我喵?')
+        # # Capture and check the album_id.
+        album_id = search(r'/jm (\d+)', msg.raw_message).group(1)
+        if not album_id:
+            await msg.reply(text=text_without_album)
             return None
 
-        album_id = album_id[0]
-
-        # Add task to loop
-        self.loop.create_task(self.api.post_group_msg(msg.group_id, text='稍等喵, 漫画正在处理中...'))
+        # Add task to events loop.
+        self.loop.create_task(self._post_msg(msg))
         self.loop.create_task(self.jmcomic.handler(album_id=album_id, msg=msg))
         return None
-
-    @staticmethod
-    async def help(msg: GroupMessage):
-        await msg.reply(
-            text=(
-                f'输入 \"/jm [神秘数字]\" 来获取漫画\n'
-                f'等待下载后, 漫画会发送到你的私聊喵'
-            )
-        )
+    
+    async def _post_msg(self, msg: GroupMessage | PrivateMessage) -> None:
+        """
+        Pack post method, check msg type and use different method.
+        
+        :param msg: The incoming message object, can be either a group message or a private message.
+        """
+        if isinstance(msg, GroupMessage):
+            await self.api.post_group_msg(msg.group_id, text=text_before_send)
+        elif isinstance(msg, PrivateMessage):
+            await self.api.post_private_msg(msg.user_id, text=text_before_send)
+        else:
+            raise TypeError('msg is not GroupMessage or PrivateMessage')

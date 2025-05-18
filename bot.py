@@ -8,14 +8,14 @@ class NcatBot(BotClient):
         if not self.config_exist:
             self.new_config()
             
-        import bot_config
-        self.read_config()
+        import bot_config as bot_config
+        self.read_config(bot_config)
         super().__init__()
         
         _log = get_log("Bot")
     
     @staticmethod
-    def read_config() -> None:
+    def read_config(bot_config) -> None:
         config.set_ws_uri(bot_config.ws_uri)        # Set napcat websocket server addr
         config.set_token(bot_config.token)          # Set websocket token (napcat wsserver token)
         config.set_webui_uri(bot_config.webui_uri)  # Set webui addr
