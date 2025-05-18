@@ -22,6 +22,7 @@ async def slice_raw_msg(raw_msg: str) -> dict | None:
     msg_params['g'] = True if msg_params['g'] == 'true' else False
     msg_params['n'] = None if not msg_params['n'] else msg_params['n']
     msg_params['t'] = None if not msg_params['t'] else msg_params['t']
+    
     return msg_params
 
 
