@@ -1,2 +1,0 @@
-jmcomic
-img2pdf
