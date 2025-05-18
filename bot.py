@@ -2,20 +2,39 @@ from ncatbot.core import BotClient
 from ncatbot.utils.config import config
 from ncatbot.utils.logger import get_log
 
-import bot_config
-
-
-# TODO: Here should check if the bot_config.py is exist and init it if not exist.
 
 class NcatBot(BotClient):
-	def __init__(self):
-		# 设置 bot 配置 (bot_config.py)
-		config.set_ws_uri(bot_config.ws_uri)  # 设置 napcat websocket server 地址
-		config.set_token(bot_config.token)  # 设置 token (napcat 服务器的 token)
-		config.set_webui_uri(bot_config.webui_uri)  # 设置 webui 地址
-		config.set_bot_uin(bot_config.bot_uin)  # 设置 bot qq 号 (必填)
-		config.set_root(bot_config.root)  # 设置 bot 超级管理员账号 (建议填写)
-		
-		super().__init__()
-		
-		_log = get_log("Bot")
+    def __init__(self):
+        if not self.config_exist:
+            self.new_config()
+            
+        import bot_config
+        self.read_config()
+        super().__init__()
+        
+        _log = get_log("Bot")
+    
+    @staticmethod
+    def read_config() -> None:
+        config.set_ws_uri(bot_config.ws_uri)        # Set napcat websocket server addr
+        config.set_token(bot_config.token)          # Set websocket token (napcat wsserver token)
+        config.set_webui_uri(bot_config.webui_uri)  # Set webui addr
+        config.set_bot_uin(bot_config.bot_uin)      # Set bot qq
+        config.set_root(bot_config.root)            # Set bot rooter account
+    
+    @staticmethod
+    def new_config() -> None:
+        with open("bot_config.py", "w") as cfg:
+            cfg.write(
+                f"# ncatbot config"
+                f"ws_uri = \"ws://localhost:3001\"      # websocket uri\n"
+                f"token = \"\"                          # ws token\n"
+                f"webui_uri = \"http://localhost:6099\" # napcat webui\n"
+                f"bot_uin = \"\"                        # bot uin\n"
+                f"root = \"\"                           # rooter\n"
+            )
+    
+    @staticmethod
+    def config_exist() -> bool:
+        from os.path import exists
+        return exists("bot_config.py")
