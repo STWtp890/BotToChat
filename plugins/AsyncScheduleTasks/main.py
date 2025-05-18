@@ -83,10 +83,11 @@ class APS(BasePlugin):
 	
 	async def on_msg(self, msg: GroupMessage | PrivateMessage) -> None:
 		""" - Check if the message is a command. """
-		if not msg.raw_message.startwith("/"):
+		if not msg.raw_message.startswith("/"):
 			return None
-		if msg.raw_message.startswith("/aps"):
+		if not msg.raw_message.startswith("/aps"):
 			return None
+		
 		if msg.raw_message.startswith("/aps help"):
 			if msg.group_id:
 				await self.api.post_group_msg(msg.group_id, text=await self.help())

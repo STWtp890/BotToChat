@@ -5,9 +5,14 @@ base_dir = os.path.abspath('.')
 plugins_dir = os.path.join(base_dir, 'plugins')
 
 jmcomic_base_dir = os.path.join(plugins_dir, 'JMcomic')
+
 jmcomic_download_dir = os.path.abspath(os.path.join(jmcomic_base_dir, 'download'))
 if not os.path.exists(jmcomic_download_dir):
     os.makedirs(jmcomic_download_dir)
+    
+jmcomic_database_path = os.path.abspath(os.path.join(jmcomic_base_dir, 'db'))
+if not os.path.exists(jmcomic_database_path):
+    open(jmcomic_database_path, 'w').close()
 
 jmcomic_download_jpg_dir = os.path.abspath(os.path.join(jmcomic_download_dir, 'jpg'))
 if not os.path.exists(jmcomic_download_jpg_dir):

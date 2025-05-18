@@ -5,7 +5,7 @@ from ncatbot.core import GroupMessage, PrivateMessage
 from ncatbot.plugin import BasePlugin
 from ncatbot.plugin import CompatibleEnrollment
 
-from .jmcomic_handler import JMcomicHandler
+from .comic_handler.comic_handler import JMcomicHandler
 
 
 text_before_send = '稍等喵, 漫画正在处理中...'

@@ -1,9 +1,11 @@
+import asyncio
+
 import jmcomic
 from jmcomic import JmAlbumDetail, JmModuleConfig, JmDownloader
 from ncatbot.core import BotAPI, GroupMessage, PrivateMessage
 
-from .jmcomic_db import JMcomicDB
-from .jmcomic_option import option_construct
+from ..db import JMcomicDB
+from .comic_option import option_construct
 
 text_missing_album = '没有这个漫画喵?'
 text_retry_allfail = '请求石沉大海了喵...'
@@ -16,6 +18,18 @@ text_after_download = "漫画发送啦!"
 
 class SendException(Exception):
     pass
+
+
+def sync_warp(func):
+    """
+    A decorator to wrap the async function to sync function.
+    """
+    
+    def wrapper(*args, **kwargs):
+        loop = asyncio.get_event_loop()
+        return loop.create_task(func(*args, **kwargs))
+    
+    return wrapper
 
 
 class JMcomicHandler:
@@ -36,7 +50,7 @@ class JMcomicHandler:
                 file_path = await self.db.get_comic(album_id)
                 if file_path is None:
                     raise FileNotFoundError(f"Get comic has unexceptable error.")
-                
+            
             response = await self._send_file(file_path, msg)
             
             if response['status'] != 'ok':
@@ -93,9 +107,9 @@ class JMcomicHandler:
     
     async def _get_comic(self, album_id) -> str | None:
         """ Check if the comic is already downloaded """
-        return await self.db.get_comic(album_id)
+        return self.db.get_comic(album_id)
     
-    def __comic_download(self, album_id: str):
+    async def __comic_download(self, album_id: str) -> None:
         """ Handle comic download by callback """
         jmcomic.download_album(
             jm_album_id=album_id,
