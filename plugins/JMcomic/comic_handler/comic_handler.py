@@ -46,8 +46,8 @@ class JMcomicHandler:
         try:
             file_path = await self._get_comic(album_id)
             if file_path is None:
-                self.__comic_download(album_id)
-                file_path = await self.db.get_comic(album_id)
+                await self.__comic_download(album_id)
+                file_path = self.db.get_comic(album_id)
                 if file_path is None:
                     raise FileNotFoundError(f"Get comic has unexceptable error.")
             
