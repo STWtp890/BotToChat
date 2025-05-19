@@ -1,3 +1,3 @@
-from .AsyncTask import AsyncTask
+from .main import AsyncTask
 
 __all__ = ["AsyncTask",]
