@@ -9,13 +9,12 @@ from .comic_handler.comic_handler import JMcomicHandler
 
 
 text_before_send = '稍等喵, 漫画正在处理中...'
-
 text_help = (
     '输入 "/jm [神秘数字]" 来获取漫画\n'
     '等待下载后, 漫画会发送到你的私聊喵'
 )
-
 text_without_album = '数字都没有, 你在逗我喵?'
+
 
 def check_jmcfg() -> bool:
     """

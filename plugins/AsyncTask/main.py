@@ -23,7 +23,7 @@ class AsyncTask(BasePlugin):
         
         self.add_scheduled_task(
             job_func=self.update_list,
-            interval='00:00:15',
+            interval='00:00',
             name='UpdateList',
         )
         

@@ -75,8 +75,8 @@ def option_construct() -> JmOption:
 							'kwargs': {
 								'level': 'album',
 								'filename_rule': 'Aid',
-								'zip_dir': jmcomic_download_zip_dir,  # 压缩文件存放的文件夹
-								'delete_original_file': False  # 压缩成功后，删除所有原文件和文件夹
+								'zip_dir': jmcomic_download_zip_dir,
+								'delete_original_file': False
 							}
 						}
 					]
