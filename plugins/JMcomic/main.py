@@ -6,7 +6,7 @@ from ncatbot.plugin import BasePlugin
 from ncatbot.plugin import CompatibleEnrollment
 
 from .comic_handler.comic_handler import JMcomicHandler
-
+from .path import jmcomic_base_dir
 
 text_before_send = '稍等喵, 漫画正在处理中...'
 text_help = (
@@ -21,12 +21,12 @@ def check_jmcfg() -> bool:
     Check if jmcomic_config.py exists
     """
     from os.path import exists
-    return exists("./jmcomic_config.py")
+    return exists(f"{jmcomic_base_dir}.jmcomic_config.py")
 def new_jmcfg() -> None:
     """
     New a jmcomic_config file for jmoption
     """
-    with open("./jmcomic_config.py", "w") as cfg:
+    with open(f"{jmcomic_base_dir}.jmcomic_config.py", "w") as cfg:
         cfg.write(
             "jmcomic_username = ''\n"
             "jmcomic_password = ''\n"
