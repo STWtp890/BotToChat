@@ -6,21 +6,6 @@ from ..path import (
 	jmcomic_download_zip_dir
 )
 
-def check_jmcfg() -> bool:
-	"""
-	Check if jmcomic_config.py exists
-	"""
-	from os.path import exists
-	return exists("../jmcomic_config.py")
-def new_jmcfg() -> None:
-	"""
-	New a jmcomic_config file for jmoption
-	"""
-	with open("../jmcomic_config.py", "w") as cfg:
-		cfg.write(
-			"jmcomic_username = ''\n"
-			"jmcomic_password = ''\n"
-		)
 
 def option_construct() -> JmOption:
 	"""
@@ -28,8 +13,6 @@ def option_construct() -> JmOption:
 	 - This function is used to construct the option for JMComic.
 	 :return: JmOption
 	 """
-	if not check_jmcfg():
-		new_jmcfg()
 	
 	from .. import jmcomic_config as jmcomic_config
 	jmcomic_username = jmcomic_config.jmcomic_username

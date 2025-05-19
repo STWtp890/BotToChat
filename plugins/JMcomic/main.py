@@ -17,6 +17,22 @@ text_help = (
 
 text_without_album = '数字都没有, 你在逗我喵?'
 
+def check_jmcfg() -> bool:
+    """
+    Check if jmcomic_config.py exists
+    """
+    from os.path import exists
+    return exists("./jmcomic_config.py")
+def new_jmcfg() -> None:
+    """
+    New a jmcomic_config file for jmoption
+    """
+    with open("./jmcomic_config.py", "w") as cfg:
+        cfg.write(
+            "jmcomic_username = ''\n"
+            "jmcomic_password = ''\n"
+        )
+
 
 bot = CompatibleEnrollment
 
@@ -27,11 +43,14 @@ class JMcomic(BasePlugin):
     """
 
     name = 'JMcomic'
-    version = '0.1.0'
+    version = '1.0.0'
     dependencies = {}
     description = 'Get JMcomic'
 
     async def on_load(self):
+        if not check_jmcfg():
+            new_jmcfg()
+            
         self.loop = asyncio.get_event_loop()
         self.jmcomic = JMcomicHandler(self.api)
 

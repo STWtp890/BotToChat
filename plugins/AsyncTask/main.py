@@ -11,7 +11,7 @@ class AsyncTask(BasePlugin):
     """
 
     name = 'AsyncTask'
-    version = '0.1.0'
+    version = '1.0.0'
     dependencies = {}
     description = 'AsyncTask'
     
