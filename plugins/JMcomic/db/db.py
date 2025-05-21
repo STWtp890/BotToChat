@@ -1,7 +1,7 @@
 import os
 
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine, select, Row
 
 from jmcomic import JmAlbumDetail
 
@@ -34,13 +34,13 @@ class JMcomicDB:
     def _initialize_db(self):
         Comics.metadata.create_all(self.engine)
         
-    def get_comic(self, album_id: str) -> str | None:
+    def get_comic(self, album_id: str) -> Row:
         with self.Session() as session:
             result = session.execute(
-                select(Comics.pdf_file_path).where(Comics.album_id == album_id)
+                select(Comics.album_name, Comics.pdf_file_path).where(Comics.album_id == album_id)
             )
             row = result.fetchone()
-            return row[0] if row else None
+            return row if row else None
 
     def new_comic(self, album: JmAlbumDetail) -> bool:
         authors = ','.join(album.authors)

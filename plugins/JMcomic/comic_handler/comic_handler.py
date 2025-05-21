@@ -14,7 +14,6 @@ text_jm_err = '发生了模块错误喵...'
 text_no_file = '未找到文件喵?'
 text_send_fail = '发送失败了喵...'
 text_other_err = '发生了未知错误喵...'
-text_after_download = "漫画发送啦!"
 
 class SendException(Exception):
     pass
@@ -44,14 +43,14 @@ class JMcomicHandler:
     async def handler(self, album_id: str, msg: PrivateMessage | GroupMessage):
         """ The entry point to handle the message """
         try:
-            file_path = await self._get_comic(album_id)
-            if file_path is None:
+            file = await self._get_comic(album_id)
+            if file is None:
                 await self.__comic_download(album_id)
-                file_path = self.db.get_comic(album_id)
-                if file_path is None:
+                file = self.db.get_comic(album_id)
+                if file is None:
                     raise FileNotFoundError(f"Get comic has unexceptable error.")
             
-            response = await self._send_file(file_path, msg)
+            response = await self._send_file(file['file_path'], msg)
             
             if response['status'] != 'ok':
                 raise SendException
@@ -74,7 +73,7 @@ class JMcomicHandler:
             raise
         
         else:
-            await self._post_msg(msg)
+            await self._post_msg(msg, file['file_name'])
         
         return None
     
@@ -92,23 +91,28 @@ class JMcomicHandler:
         
         return response
     
-    async def _post_msg(self, msg: GroupMessage | PrivateMessage) -> None:
+    async def _post_msg(self, msg: GroupMessage | PrivateMessage, album_name: str) -> None:
         """
         Pack post method, check msg type and use different method.
 
         :param msg: The incoming message object, can be either a group message or a private message.
         """
         if isinstance(msg, GroupMessage):
-            await self.api.post_group_msg(msg.group_id, text=text_after_download)
+            await self.api.post_group_msg(msg.group_id, text= f'名为\n"{album_name}"\n的漫画已经发送啦喵')
         elif isinstance(msg, PrivateMessage):
-            await self.api.post_private_msg(msg.user_id, text=text_after_download)
-        else:
-            raise TypeError('msg is not GroupMessage or PrivateMessage')
+            await self.api.post_private_msg(msg.user_id, text= f'名为\n"{album_name}"\n的漫画已经发送啦喵')
     
-    async def _get_comic(self, album_id) -> str | None:
+    async def _get_comic(self, album_id) -> dict | None:
         """ Check if the comic is already downloaded """
-        return self.db.get_comic(album_id)
-    
+        row = self.db.get_comic(album_id)
+        if row is None:
+            return None
+        file = {
+            'file_name': row[0],
+            'file_path': row[1]
+        }
+        return file
+        
     async def __comic_download(self, album_id: str) -> None:
         """ Handle comic download by callback """
         jmcomic.download_album(

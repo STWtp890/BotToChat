@@ -21,12 +21,12 @@ def check_jmcfg() -> bool:
     Check if jmcomic_config.py exists
     """
     from os.path import exists
-    return exists(f"{jmcomic_base_dir}.jmcomic_config.py")
+    return exists(f"{jmcomic_base_dir}/jmcomic_config.py")
 def new_jmcfg() -> None:
     """
     New a jmcomic_config file for jmoption
     """
-    with open(f"{jmcomic_base_dir}.jmcomic_config.py", "w") as cfg:
+    with open(f"{jmcomic_base_dir}/jmcomic_config.py", "w") as cfg:
         cfg.write(
             "jmcomic_username = ''\n"
             "jmcomic_password = ''\n"
@@ -81,7 +81,7 @@ class JMcomic(BasePlugin):
             return None
 
         # Add task to events loop.
-        self.loop.create_task(self._post_msg(msg))
+        await self._post_msg(msg)
         self.loop.create_task(self.jmcomic.handler(album_id=album_id, msg=msg))
         return None
     
