@@ -1,1 +1,4 @@
-ncatbot
+ncatbot>=3.8.10
+jmcomic>=2.6.5
+img2pdf
+sqlalchemy>=2.0.43

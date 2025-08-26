@@ -1,3 +1,0 @@
-jmcomic
-img2pdf
-sqlalchemy
