@@ -1,5 +1,5 @@
-import bot
+import main
 
 if __name__ == '__main__':
-    bot = bot.NcatBot()
-    bot.run()
+    new_bot = main.NcatBot()
+    new_bot.run()
