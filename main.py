@@ -2,12 +2,12 @@ from ncatbot.core import BotClient
 from ncatbot.utils.config import config
 from ncatbot.utils.logger import get_log
 
-import ncatbot_config as ncatbot_config
+from ncatbot_config import attribute_dict as ncatbot_config
 
 
 class NcatBot(BotClient):
     def __init__(self):
-        self.read_config(ncatbot_config.attribute_dict)
+        self.read_config(ncatbot_config)
         super().__init__()
         
         self._ncatbot_logger = get_log("Bot")
