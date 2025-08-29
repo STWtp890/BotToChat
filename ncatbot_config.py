@@ -24,11 +24,11 @@ class NcatbotYamlConfig:
     def _new_config_yaml(self) -> None:
         with open(f"{self.__yaml_path}", "w") as cfg:
             cfg.write(
-                f"ws_uri: \"ws://localhost:3001\"      # websocket url\n"
-                f"token: \"\"                          # ws token\n"
-                f"webui_uri: \"http://localhost:6099\" # napcat webui\n"
-                f"bot_uin: \"\"                        # your bot qq acount\n"
-                f"root: \"\"                           # rooter\n"
+                f'ws_uri: "ws://localhost:3001"      # websocket url\n'
+                f'token: ""                          # ws token\n'
+                f'webui_uri: "http://localhost:6099" # napcat webui\n'
+                f'bot_uin: ""                        # your bot qq acount\n'
+                f'root: ""                           # rooter\n'
             )
     
     def _config_exist(self) -> bool:
