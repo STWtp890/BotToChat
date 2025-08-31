@@ -1,13 +1,13 @@
 from jmcomic import JmOption
 
-from . import jmcomic_config
-from .jmcomic_path import jmcomic_download_jpg_dir, jmcomic_download_pdf_dir, jmcomic_download_zip_dir
+from .jmcomic_config import jmcomic_config_dict
+from .jmcomic_path import jmcomic_download_jpg_dir, jmcomic_download_pdf_dir # ,jmcomic_download_zip_dir
 
 
 class JMComicOption:
     def __init__(self):
-        self.username = jmcomic_config.jmcomic_config_dict.get("jmcomic_username")
-        self.password = jmcomic_config.jmcomic_config_dict.get("jmcomic_password")
+        self.username = jmcomic_config_dict.get("jmcomic_username")
+        self.password = jmcomic_config_dict.get("jmcomic_password")
         self.jm_option = self.__option_construct()
     
     def __option_construct(self) -> JmOption:

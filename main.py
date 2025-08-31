@@ -2,7 +2,7 @@ from ncatbot.core import BotClient
 from ncatbot.utils.config import config
 from ncatbot.utils.logger import get_log
 
-from ncatbot_config import attribute_dict as ncatbot_config
+from ncatbot_config import ncatbot_config_dict as ncatbot_config
 
 
 class NcatBot(BotClient):

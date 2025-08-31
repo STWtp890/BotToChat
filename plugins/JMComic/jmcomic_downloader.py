@@ -1,8 +1,16 @@
-import queue
-import threading
+from queue import (
+    Queue as Queue,
+    Empty as queue_Empty,
+)
 
-import jmcomic
-from jmcomic import JmAlbumDetail, JmModuleConfig, JmDownloader
+from threading import (
+    Thread as Thread,
+)
+
+from jmcomic import (
+    JmAlbumDetail, JmModuleConfig, JmDownloader,
+    download_album as jmcomic_download_album,
+)
 
 from .jmcomic_option import jmcomic_option
 from .jmcomic_database import JMComicSQL
@@ -15,8 +23,8 @@ class JMComicDownloader:
         self.jmcomic_option = jmcomic_option
         JmModuleConfig.AFIELD_ADVICE['id'] = lambda album: f'{album.id}'
         
-        self.download_tasks_queue = queue.Queue()
-        self.consume_thread = threading.Thread(target=self.consume_download_task, daemon=True, name='JMComicDownloader')
+        self.download_tasks_queue = Queue()
+        self.consume_thread = Thread(target=self.consume_download_task, daemon=True, name='JMComicDownloader')
         self.consume_thread.start()
         
     def create_download_task(self, album_id: str):
@@ -28,11 +36,11 @@ class JMComicDownloader:
                 album_id = self.download_tasks_queue.get(timeout=30)
                 self.comic_album_download(album_id)
                 self.download_tasks_queue.task_done()
-            except queue.Empty:
+            except queue_Empty:
                 continue
     
     def comic_album_download(self, album_id: str):
-        jmcomic.download_album(
+        jmcomic_download_album(
             jm_album_id=album_id,
             option=jmcomic_option.jm_option,
             callback=self.callback,

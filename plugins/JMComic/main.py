@@ -1,8 +1,20 @@
-from os import path
-from re import search
+from os.path import (
+    join as os_path_join,
+    exists as os_path_exists,
+)
 
-import yaml
-import asyncio
+from re import (
+    search as re_search,
+)
+
+from yaml import (
+    load as yaml_load,
+    FullLoader as yaml_FullLoader
+)
+
+from asyncio import (
+    get_event_loop as asyncio_get_event_loop
+)
 
 from ncatbot.core import GroupMessage, PrivateMessage
 from ncatbot.plugin import BasePlugin
@@ -14,18 +26,18 @@ from .jmcomic_path import jmcomic_base_dir
 # read jmcomic config yaml
 class ReplyTextYaml:
     def __init__(self):
-        self.__yaml_path = path.join(jmcomic_base_dir, "jmcomic_reply.yaml")
+        self.__yaml_path = os_path_join(jmcomic_base_dir, "jmcomic_reply.yaml")
         if not self._config_exist():
             self._new_config_yaml()
         self._set_config()
         
     def _config_exist(self) -> bool:
-        return path.exists(f"{self.__yaml_path}")
+        return os_path_exists(f"{self.__yaml_path}")
     
     def _new_config_yaml(self) -> None:
         with open(f"{self.__yaml_path}", "w") as cfg:
             cfg.write(
-                f'text_help: "输入:/jm [神秘数字], 来获取漫画, 等待下载后漫画就会发送喵" \n'
+                f'text_help: "输入:/jm [神秘数字] 来获取漫画, 等待下载后漫画就会发送喵" \n'
                 f'text_before_send_comic: "稍等喵, 漫画正在处理中..." \n'
             )
             
@@ -36,7 +48,7 @@ class ReplyTextYaml:
         self.text_before_send_comic = _yaml_attribute["text_before_send_comic"]
         
     def _get_yaml(self) -> dict:
-        return yaml.load(open(self.__yaml_path, "r", encoding="utf-8"), Loader=yaml.FullLoader)
+        return yaml_load(open(self.__yaml_path, "r", encoding="utf-8"), Loader=yaml_FullLoader)
 
 reply_text_yaml = ReplyTextYaml()
 text_attribute_dict = {
@@ -62,8 +74,8 @@ class JMComic(BasePlugin):
     dependencies = {}
     description = 'JMComic'
 
-    async def on_load(self):
-        self.loop = asyncio.get_event_loop()
+    def _init_(self):
+        self.loop = asyncio_get_event_loop()
         self.jmcomic = JMcomicHandler()
 
     @bot.group_event(types='all')
@@ -88,7 +100,7 @@ class JMComic(BasePlugin):
             return None
 
         try:
-            album_id = search(r'/jm (\d+)', msg.raw_message).group(1)
+            album_id = re_search(r'/jm (\d+)', msg.raw_message).group(1)
         except AttributeError:
             await msg.reply(text="没有数字你在逗我喵?")
             return None
@@ -99,10 +111,6 @@ class JMComic(BasePlugin):
         return None
         
     async def send_comic(self, msg: GroupMessage | PrivateMessage, album_id: str) -> None:
-        
-        if not album_id:
-            await self.post_message(msg, "没有数字你在逗我喵?")
-            
         album: dict | None = await self.jmcomic.find(album_id)
         if not album:
             await self.post_message(msg, "漫画下载出了点问题喵")

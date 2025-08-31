@@ -1,7 +1,16 @@
-from os import path
+from os.path import (
+    join as os_path_join,
+)
 
-import sqlalchemy
 from sqlalchemy import Column, Text, String
+from sqlalchemy import (
+    engine as sql_engine,
+    create_engine as sql_create_engine,
+)
+from sqlalchemy import (
+    select as sql_select,
+
+)
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import declarative_base, sessionmaker
 
@@ -35,7 +44,7 @@ class JMComicSQL:
         self.jmcomic_database_username = jmcomic_config_dict.get("jmcomic_database_username")
         self.jmcomic_database_password = jmcomic_config_dict.get("jmcomic_database_password")
         
-        self.connection_url = sqlalchemy.engine.URL.create(
+        self.connection_url = sql_engine.URL.create(
             drivername="mysql+pymysql",
             username=self.jmcomic_database_username,
             password=self.jmcomic_database_password,
@@ -44,7 +53,7 @@ class JMComicSQL:
             database=self.jmcomic_database,
         )
         
-        self.engine = sqlalchemy.create_engine(self.connection_url, echo=False)
+        self.engine = sql_create_engine(self.connection_url, echo=False)
         self.create_albums_table()
         self.Session = sessionmaker(bind=self.engine, autocommit=False, autoflush=False)
         
@@ -54,8 +63,8 @@ class JMComicSQL:
 
     def insert_album(self, album: dict) -> None:
         """ Insert a new album into the database """
-        pdf_album_file_path = path.join(self.base_pdf_file_path, f"{album.get("id")}.pdf")
-        # zip_album_file_path = path.join(self.base_zip_file_path, f"{album.get("id")}.zip")
+        pdf_album_file_path = os_path_join(self.base_pdf_file_path, f"{album.get("id")}.pdf")
+        # zip_album_file_path = os_path_join(self.base_zip_file_path, f"{album.get("id")}.zip")
         
         new_album = Album(
             album_id=album.get("id"),
@@ -81,7 +90,7 @@ class JMComicSQL:
         with self.Session() as session:
             try:
                 select_result = session.execute(
-                    sqlalchemy.select(Album).where(Album.album_id == album_id)
+                    sql_select(Album).where(Album.album_id == album_id)
                 )
                 album = select_result.scalars().first()
             except Exception as e:
