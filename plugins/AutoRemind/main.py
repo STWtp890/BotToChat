@@ -1,6 +1,4 @@
-from asyncio import (
-    get_event_loop as asyncio_get_event_loop,
-)
+import asyncio
 
 from re import (
     search as re_search,
@@ -44,11 +42,11 @@ class AutoRemind(BasePlugin):
     )
     
     def _init_(self) -> None:
-        self.loop = asyncio_get_event_loop()
         self.auto_remind_yaml = AutoRemindYaml()
         
     async def on_load(self) -> None:
-        """ Load the persistable user tasks and register internal yaml task"""
+        self.event_loop = asyncio.get_event_loop()
+        
         await self.yaml_register_schedule(self.auto_remind_yaml.task_list)
         for user_task in self.data.get('user_task', []):
             self.add_scheduled_task(**user_task)
@@ -57,15 +55,18 @@ class AutoRemind(BasePlugin):
         """ Save user tasks and uninstall the internal tasks when plugin unload """
         for name in self.auto_remind_yaml.task_list:
             self.remove_scheduled_task(name)
-        self.data['user_task'] = self._time_task_scheduler._jobs
+        try:
+            self.data['user_task'] = self._time_task_scheduler._jobs
+        except KeyError:
+            return None
     
     @bot.group_event(types='all')
     async def on_group_msg(self, msg: GroupMessage):
-        self.loop.create_task(self.on_msg(msg))
+        self.event_loop.create_task(self.on_msg(msg))
     
     @bot.private_event(types='all')
     async def on_private_message(self, msg: PrivateMessage):
-        self.loop.create_task(self.on_msg(msg))
+        self.event_loop.create_task(self.on_msg(msg))
         
     async def on_msg(self, msg: GroupMessage | PrivateMessage) -> None:
         if not msg.raw_message.startswith('/remind'):
