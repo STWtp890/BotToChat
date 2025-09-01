@@ -12,9 +12,7 @@ from yaml import (
     FullLoader as yaml_FullLoader
 )
 
-from asyncio import (
-    get_event_loop as asyncio_get_event_loop
-)
+import asyncio
 
 from ncatbot.core import GroupMessage, PrivateMessage
 from ncatbot.plugin import BasePlugin
@@ -75,16 +73,22 @@ class JMComic(BasePlugin):
     description = 'JMComic'
 
     def _init_(self):
-        self.loop = asyncio_get_event_loop()
-        self.jmcomic = JMcomicHandler()
-
+        pass
+        
+    async def on_load(self) -> None:
+        """
+        Loads the plugin and initializes the JMComicHandler.
+        """
+        self.event_loop = asyncio.get_event_loop()
+        self.jmcomic = JMcomicHandler(self.event_loop)
+        
     @bot.group_event(types='all')
     async def on_group_msg(self, msg: GroupMessage):
-        self.loop.create_task(self.on_msg(msg))
+        self.event_loop.create_task(self.on_msg(msg))
 
     @bot.private_event(types='all')
     async def on_private_message(self, msg: PrivateMessage):
-        self.loop.create_task(self.on_msg(msg))
+        self.event_loop.create_task(self.on_msg(msg))
 
     async def on_msg(self, msg: GroupMessage | PrivateMessage) -> None:
         """

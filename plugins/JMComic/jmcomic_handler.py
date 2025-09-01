@@ -1,7 +1,4 @@
-from asyncio import (
-    get_event_loop as asyncio_get_event_loop,
-    sleep as asyncio_sleep
-)
+import asyncio
 
 from .jmcomic_database import JMComicSQL
 from .jmcomic_downloader import JMComicDownloader
@@ -10,11 +7,10 @@ from .jmcomic_downloader import JMComicDownloader
 class JMcomicHandler:
     """ By using jmcomic API to crawl comics. """
     
-    def __init__(self):
+    def __init__(self, event_loop: asyncio.AbstractEventLoop):
+        self.event_loop = event_loop
         self.database = JMComicSQL()
         self.downloader = JMComicDownloader(self.database)
-        self.loop = asyncio_get_event_loop()
-        
         
     async def find(self, album_id: str) -> dict | None:
         return await self.comic_handler(album_id)
@@ -42,7 +38,7 @@ class JMcomicHandler:
         while not album and wait_time < 12:
             try:
                 wait_time += 1
-                await asyncio_sleep(10)
+                await asyncio.sleep(10)
                 album = self.database.get_album(album_id)
             except Exception as e:
                 raise e
