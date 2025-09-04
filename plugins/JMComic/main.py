@@ -72,14 +72,21 @@ class JMComic(BasePlugin):
     dependencies = {}
     description = 'JMComic'
 
-    def _init_(self):
-        pass
-        
     async def on_load(self) -> None:
         """
-        Loads the plugin and initializes the JMComicHandler.
+        About why 'event_loop' must be initiallized in 'on_load',
+        - BasePlugin:
+        >> await asyncio.to_thread(self._init_)
+        >> await self.on_load()
+        'on_load' function will be called after the new thread eventloop been created.
+        
+        关于为什么在 'on_load' 函数中初始化 'event_loop':
+        - BasePlugin:
+        >> await asyncio.to_thread(self._init_)
+        >> await self.on_load()
+        'on_load'函数会在新线程的事件循环被创建后被调用.
         """
-        self.event_loop = asyncio.get_event_loop()
+        self.event_loop = asyncio.get_running_loop()
         self.jmcomic = JMcomicHandler(self.event_loop)
         
     @bot.group_event(types='all')
