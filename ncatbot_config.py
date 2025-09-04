@@ -7,20 +7,19 @@ from os.path import (
     exists as os_path_exists
 )
 
+from AbstractYamlConfig import AbstractYamlConfig
+
 
 # read ncatbot config yaml
-class NcatbotYamlConfig:
-    def __init__(self):
-        self.__yaml_path = "./ncatbot_config.yaml"
-        if not self.config_exist():
-            self.new_default_yaml()
-        self._set_config()
-
+class NcatbotYamlConfig(AbstractYamlConfig):
+    def __init__(self, config_file_path: str = "ncatbot_config.yaml"):
+        super().__init__(config_file_path)
+        
     def config_exist(self) -> bool:
-        return os_path_exists(f"{self.__yaml_path}")
+        return os_path_exists(f"{self.yaml_path}")
     
     def new_default_yaml(self) -> None:
-        with open(f"{self.__yaml_path}", "w") as cfg:
+        with open(f"{self.yaml_path}", "w") as cfg:
             cfg.write(
                 f'ws_uri: "ws://localhost:3001"      # websocket url\n'
                 f'token: ""                          # ws token\n'
@@ -29,7 +28,7 @@ class NcatbotYamlConfig:
                 f'root: ""                           # rooter\n'
             )
 
-    def _set_config(self):
+    def set_config(self):
         yaml_attribute = self.get_yaml()
         # config
         self.ws_uri = yaml_attribute["ws_uri"]
@@ -39,7 +38,7 @@ class NcatbotYamlConfig:
         self.root = yaml_attribute["root"]
     
     def get_yaml(self) -> dict:
-        return yaml_load(open(self.__yaml_path, "r", encoding="utf-8"), Loader=YamlFullLoader)
+        return yaml_load(open(self.yaml_path, "r", encoding="utf-8"), Loader=YamlFullLoader)
     
     
 ncatbot_config_yaml = NcatbotYamlConfig()

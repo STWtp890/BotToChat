@@ -7,21 +7,19 @@ from os.path import (
     exists as os_path_exists
 )
 
+from AbstractYamlConfig import AbstractYamlConfig
 from .jmcomic_path import jmcomic_base_dir
 
 
-class JMComicYamlConfig:
-    def __init__(self):
-        self.__yaml_path = os_path_join(jmcomic_base_dir, "jmcomic_config.yaml")
-        if not self.config_exist():
-            self.new_default_yaml()
-        self._set_config()
+class JMComicYamlConfig(AbstractYamlConfig):
+    def __init__(self, config_file_path: str = os_path_join(jmcomic_base_dir, "jmcomic_config.yaml")):
+        super().__init__(config_file_path)
     
     def config_exist(self) -> bool:
-        return os_path_exists(f"{self.__yaml_path}")
+        return os_path_exists(f"{self.yaml_path}")
     
     def new_default_yaml(self) -> None:
-        with open(f"{self.__yaml_path}", "w") as cfg:
+        with open(f"{self.yaml_path}", "w") as cfg:
             cfg.write(
                 f'jmcomic_username: "" \n'
                 f'jmcomic_password: "" \n'
@@ -33,7 +31,7 @@ class JMComicYamlConfig:
                 f'jmcomic_database_password: "ncatbot_jmcomic_plugin" \n'
             )
     
-    def _set_config(self) -> None:
+    def set_config(self) -> None:
         yaml_attribute = self.get_yaml()
         
         self.jmcomic_username = yaml_attribute["jmcomic_username"]
@@ -46,7 +44,7 @@ class JMComicYamlConfig:
         self.jmcomic_database_password = yaml_attribute["jmcomic_database_password"]
         
     def get_yaml(self) -> dict:
-        return yaml_load(open(self.__yaml_path, "r", encoding="utf-8"), Loader=YamlFullloader)
+        return yaml_load(open(self.yaml_path, "r", encoding="utf-8"), Loader=YamlFullloader)
 
 
 jmcomic_config_yaml = JMComicYamlConfig()
