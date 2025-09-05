@@ -8,7 +8,7 @@ from ncatbot.core import GroupMessage, PrivateMessage
 from ncatbot.plugin import BasePlugin, CompatibleEnrollment
 
 from ncatbot_config import ncatbot_config_dict
-from .auto_remind_config import AutoRemindYaml
+from .autoremind_config import AutoRemindYaml
 
 
 bot = CompatibleEnrollment

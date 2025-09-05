@@ -9,11 +9,11 @@ from yaml import (
 )
 
 from AbstractClass.AbstractYamlConfig import AbstractYamlConfig
-from .auto_remind_path import autotask_base_dir
+from .autoremind_path import autoremind_base_dir
 
 
 class AutoRemindYaml(AbstractYamlConfig):
-    def __init__(self, config_file_path: str = os_path_join(autotask_base_dir, "auto_remind.yaml")):
+    def __init__(self, config_file_path: str = os_path_join(autoremind_base_dir, "auto_remind.yaml")):
         # super method of AbstractYamlConfig class will call 'set_config' method to initialize 'yaml_task_list'
         self.yaml_task_list = None
         super().__init__(config_file_path)
