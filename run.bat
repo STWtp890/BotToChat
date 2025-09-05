@@ -13,6 +13,6 @@ call Ncatbot_env\Scripts\activate.bat && (
     pip install -r requirements.txt
     echo Starting the Python script...
     echo 运行Bot启动脚本:
-    python your_script.py
+    python run.py
 )
 pause
