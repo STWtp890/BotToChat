@@ -7,7 +7,7 @@ if not exist "Ncatbot_env" (
 )
 REM 安装依赖并运行脚本的关键：在同一上下文中依次执行
 REM 使用 call 命令运行激活脚本，然后执行后续命令
-call venv_name\Scripts\activate.bat && (
+call Ncatbot_env\Scripts\activate.bat && (
     echo Installing dependencies from requirements.txt...
     echo 从requirements.txt中安装软件包依赖:
     pip install -r requirements.txt
