@@ -3,13 +3,12 @@ from os.path import (
     exists as os_path_exists,
 )
 
-from ncatbot.utils import config
 from yaml import (
     load as yaml_load,
     FullLoader as YamlFullloader
 )
 
-from AbstractYamlConfig import AbstractYamlConfig
+from AbstractClass.AbstractYamlConfig import AbstractYamlConfig
 from .auto_remind_path import autotask_base_dir
 
 

@@ -7,7 +7,7 @@ from os.path import (
     exists as os_path_exists
 )
 
-from AbstractYamlConfig import AbstractYamlConfig
+from AbstractClass.AbstractYamlConfig import AbstractYamlConfig
 
 
 # read ncatbot config yaml
