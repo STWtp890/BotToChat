@@ -1,1 +1,4 @@
-/ncatbot_config.yaml
+.idea
+.vscode
+logs
+config.yaml
