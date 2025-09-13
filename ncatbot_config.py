@@ -1,8 +1,3 @@
-from yaml import (
-    load as yaml_load,
-    FullLoader as YamlFullLoader
-)
-
 from os.path import (
     exists as os_path_exists
 )
@@ -12,7 +7,7 @@ from AbstractClass.AbstractYamlConfig import AbstractYamlConfig
 
 # read ncatbot config yaml
 class NcatbotYamlConfig(AbstractYamlConfig):
-    def __init__(self, config_file_path: str = "ncatbot_config.yaml"):
+    def __init__(self, config_file_path: str = "config.yaml"):
         super().__init__(config_file_path)
         
     def config_exist(self) -> bool:
@@ -21,36 +16,31 @@ class NcatbotYamlConfig(AbstractYamlConfig):
     def new_default_yaml(self) -> None:
         with open(f"{self.yaml_path}", "w") as cfg:
             cfg.write(
-                f'ws_uri: "ws://localhost:3001"      # websocket url\n'
-                f'token: ""                          # ws token\n'
-                f'webui_uri: "http://localhost:6099" # napcat webui\n'
-                f'bot_uin: ""                        # your bot qq acount\n'
-                f'root: ""                           # rooter\n'
+            'napcat:\n'
+            '  ws_uri: "ws://localhost:3001"\n'
+            '  ws_token: "ncatbot"\n'
+            '  ws_listen_ip: "localhost"\n'
+            '  webui_uri: "http://localhost:6099"\n'
+            '  webui_token: "napcat"\n'
+            '  enable_webui: false\n'
+            '  check_napcat_update: false\n'
+            '  stop_napcat: false\n'
+            '  suppress_client_initial_error: false\n'
+            '  remote_mode: false\n'
+            '  report_self_message: false\n'
+            '  report_forward_message_detail: true\n'
+            '\n'
+            'plugin:\n'
+            '  plugins_dir: "plugins"\n'
+            '  plugin_whitelist: []\n'
+            '  plugin_blacklist: []\n'
+            '  skip_plugin_load: false\n'
+            '\n'
+            'root: "123456"\n'
+            'bt_uin: "123456"\n'
+            'enable_webui_interaction: false\n'
+            'debug: false\n'
+            'github_proxy: null\n'
+            'check_ncatbot_update: true\n'
+            'skip_ncatbot_install_check: false\n'
             )
-
-    def set_config(self):
-        yaml_attribute = self.get_yaml()
-        # config
-        self.ws_uri = yaml_attribute["ws_uri"]
-        self.token = yaml_attribute["token"]
-        self.webui_uri = yaml_attribute["webui_uri"]
-        self.bot_uin = yaml_attribute["bot_uin"]
-        self.root = yaml_attribute["root"]
-    
-    def get_yaml(self) -> dict:
-        return yaml_load(open(self.yaml_path, "r", encoding="utf-8"), Loader=YamlFullLoader)
-    
-    
-ncatbot_config_yaml = NcatbotYamlConfig()
-
-# ncatbot yaml config dict
-ncatbot_config_dict = {
-    "ws_uri": ncatbot_config_yaml.ws_uri,
-    "token": ncatbot_config_yaml.token,
-    "webui_uri": ncatbot_config_yaml.webui_uri,
-    "bot_uin": ncatbot_config_yaml.bot_uin,
-    "root": ncatbot_config_yaml.root,
-}
-
-if __name__ == "__main__":
-    print(ncatbot_config_dict)

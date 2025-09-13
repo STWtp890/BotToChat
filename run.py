@@ -1,5 +1,7 @@
-import main
-
 if __name__ == '__main__':
-    new_bot = main.NcatBot()
+    from ncatbot_config import NcatbotYamlConfig
+    config = NcatbotYamlConfig()
+    
+    from main import NcatBot
+    new_bot = NcatBot()
     new_bot.run()
