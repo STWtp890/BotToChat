@@ -1,18 +1,51 @@
 @echo off
+REM 使用UTF-8编码
+chcp 65001 >nul
+
+REM 检查Python版本
+python --version >nul 2>&1
+if errorlevel 1 (
+    echo Python is not installed. Please install Python and try again.
+    echo 请安装Python并重新运行脚本.
+    pause
+    exit /b 1
+)
+
 REM 检查并创建虚拟环境
-if not exist "Ncatbot_env" (
+if not exist ".venv" (
     echo Creating virtual environment...
     echo 创建Bot虚拟环境中:
-    python -m venv Ncatbot_env
+    python -m venv .venv
 )
-REM 安装依赖并运行脚本的关键：在同一上下文中依次执行
-REM 使用 call 命令运行激活脚本，然后执行后续命令
-call Ncatbot_env\Scripts\activate.bat && (
-    echo Installing dependencies from requirements.txt...
-    echo 从requirements.txt中安装软件包依赖:
-    pip install -r requirements.txt
-    echo Starting the Python script...
-    echo 运行Bot启动脚本:
-    python run.py
+
+REM 检查虚拟环境是否创建成功
+if not exist ".venv" (
+    echo Failed to create virtual environment.
+    echo 创建虚拟环境失败.
+    pause
+    exit /b 1
 )
+
+REM 激活虚拟环境并安装依赖
+echo Activating virtual environment...
+call .venv\Scripts\activate.bat
+if errorlevel 1 (
+    echo Failed to activate virtual environment.
+    echo 激活虚拟环境失败.
+    pause
+    exit /b 1
+)
+
+echo Installing dependencies from requirements.txt...
+pip install -r requirements.txt
+if errorlevel 1 (
+    echo Failed to install dependencies.
+    echo 安装依赖失败.
+    pause
+    exit /b 1
+)
+
+echo Starting the Python script:
+echo 启动Python脚本:
+python run.py
 pause

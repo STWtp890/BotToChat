@@ -1,5 +1,5 @@
-ncatbot>=3.8.10
-jmcomic>=2.6.5
+ncatbot>=4.0.5
+jmcomic>=2.6.7
 img2pdf
 sqlalchemy>=2.0.43
 PyYAML>=6.0.2
